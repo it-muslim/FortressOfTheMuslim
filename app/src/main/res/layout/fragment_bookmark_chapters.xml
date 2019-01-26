@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_main_bookmarks_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbarThumbVertical="@drawable/thumb_drawable"
+        android:scrollbars="vertical"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tv_is_bookmark_list_empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableBottom="@drawable/ic_chapter_bookmark"
+        android:drawablePadding="16dp"
+        android:gravity="center"
+        android:text="@string/bookmark_chapters_list_empty"
+        android:textSize="20sp" />
+</LinearLayout>

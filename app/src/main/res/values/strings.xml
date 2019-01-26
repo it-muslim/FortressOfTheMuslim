@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">Крепость мусульманина</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_night_mode">Ночной режим</string>
+    <string name="action_exit">Выход</string>
+
+    <string name="nav_settings">Настройки</string>
+    <string name="nav_list_apps">Список приложений</string>
+    <string name="nav_about_us">О нас</string>
+    <string name="nav_download_all_audio">Скачать все аудио разом</string>
+    <string name="nav_rate_app">Оценить</string>
+    <string name="nav_share">Поделиться</string>
+    <string name="nav_additionally">Дополнительно</string>
+
+    <string name="about_us_text"><b>JMApps</b> — серия бесплатных андроид-приложений для мусульман.
+        Наши приложения всегда будут <b>бесплатными</b> и <b>без</b> какой-либо <b>рекламы</b>.
+        \n\nВы можете следить за обновлением старых и изданием новых приложений в нашей группе в ВКонтакте: www.vk.com/JMApps,
+        \nна нашем канале в Telegram: t.me/JMApps, или в нашей группе в Фейсбуке: www.facebook.com/JMAppsM
+        \n\nЕсли же у вас возникнут вопросы, или появятся предложения или критика, можете написать нам
+        на почту: jmappsmuslim@gmail.com, или в Telegram: t.me/JMbikk
+    </string>
+
+    <string name="title_content_chapter">К списку глав</string>
+    <string name="download_audio_chapter">Скачать главу</string>
+    <string name="action_chapter_list">Список глав</string>
+    <string name="action_bookmark_list">Избранные главы</string>
+    <string name="action_dua_list">Список дуа</string>
+    <string name="action_bookmark_dua_list">Избранные дуа</string>
+    <string name="bookmark_chapters_list_empty">Избранных глав нет</string>
+    <string name="bookmark_items_list_empty">Избранных дуа нет</string>
+    <string name="cancel">Отменить</string>
+
+    <string name="download_all_instruction">Скачать все аудио файлы разом?</string>
+</resources>
