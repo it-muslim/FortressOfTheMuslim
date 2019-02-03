@@ -12,7 +12,7 @@ import java.util.List;
 public class SQLAudioLinksList extends SQLiteOpenHelper {
 
     private static final String DBName = "FortressOfTheMuslimDB";
-    private static final int DBVersion = 1;
+    private static final int DBVersion = 2;
 
     private static final String TableName = "Table_audio_links";
 
