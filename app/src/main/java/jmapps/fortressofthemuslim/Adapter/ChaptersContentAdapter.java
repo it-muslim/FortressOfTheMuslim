@@ -22,9 +22,11 @@ import static jmapps.fortressofthemuslim.Fragment.MainItemsAll.keyItemBookmark;
 public class ChaptersContentAdapter extends RecyclerView.Adapter<ChaptersContentVH> {
 
     private final List<ChaptersContentModel> mChaptersContentsModel;
+    private final Context mContext;
     private final LayoutInflater inflater;
     private final SupplicationItemButtons mSupplicationItemButtons;
     private final SharedPreferences mPreferences;
+    private int currentIndex = -1;
 
     public interface SupplicationItemButtons {
         void eventButtons(ChaptersContentVH chaptersContentVH, List<ChaptersContentModel> chaptersContentModel, int position);
@@ -35,6 +37,7 @@ public class ChaptersContentAdapter extends RecyclerView.Adapter<ChaptersContent
                                   SupplicationItemButtons supplicationItemButtons,
                                   SharedPreferences preferences) {
         this.mChaptersContentsModel = chaptersContentModel;
+        this.mContext = context;
         this.mSupplicationItemButtons = supplicationItemButtons;
         this.mPreferences = preferences;
         inflater = LayoutInflater.from(context);
@@ -62,14 +65,23 @@ public class ChaptersContentAdapter extends RecyclerView.Adapter<ChaptersContent
             chaptersContentVH.tvContentArabic.setVisibility(View.GONE);
         }
 
-        if (strContentTranscription != null) {
-            chaptersContentVH.tvContentTranscription.setVisibility(View.VISIBLE);
-            chaptersContentVH.tvContentTranscription.setText(Html.fromHtml(strContentTranscription));
+        if (!chaptersContentVH.textTrState) {
+            if (strContentTranscription != null) {
+                chaptersContentVH.tvContentTranscription.setVisibility(View.VISIBLE);
+                chaptersContentVH.tvContentTranscription.setText(Html.fromHtml(strContentTranscription));
+            } else {
+                chaptersContentVH.tvContentTranscription.setVisibility(View.GONE);
+            }
         } else {
             chaptersContentVH.tvContentTranscription.setVisibility(View.GONE);
         }
 
-        chaptersContentVH.tvContentRussian.setText(Html.fromHtml(strContentRussian));
+        if (!chaptersContentVH.textRuState) {
+            chaptersContentVH.tvContentRussian.setVisibility(View.VISIBLE);
+            chaptersContentVH.tvContentRussian.setText(Html.fromHtml(strContentRussian));
+        } else {
+            chaptersContentVH.tvContentRussian.setVisibility(View.GONE);
+        }
 
         if (strContentSource != null) {
             chaptersContentVH.tvContentSource.setVisibility(View.VISIBLE);
@@ -86,19 +98,22 @@ public class ChaptersContentAdapter extends RecyclerView.Adapter<ChaptersContent
                 keyItemBookmark + String.valueOf(strIdPosition), false);
         chaptersContentVH.tbAddRemoveBookmarkItem.setChecked(bookmarkState);
 
-        final boolean downloadItem = new File(Environment.getExternalStorageDirectory() +
-                File.separator + "FortressOfTheMuslim_audio" + File.separator + "dua" + strIdPosition + ".mp3").exists();
+        chaptersContentVH.lineMain.setVisibility((currentIndex == position) ? View.INVISIBLE : View.VISIBLE);
+        chaptersContentVH.lineAccent.setVisibility((currentIndex == position) ? View.VISIBLE : View.INVISIBLE);
 
-        if (downloadItem) {
-            chaptersContentVH.tbPlayItem.setVisibility(View.VISIBLE);
-            chaptersContentVH.sbAudioProgress.setVisibility(View.VISIBLE);
-            chaptersContentVH.tbRepeatItem.setVisibility(View.VISIBLE);
-            chaptersContentVH.viewIfVisible.setVisibility(View.GONE);
+        boolean checkAudioFile = new File(Environment.getExternalStorageDirectory() +
+                File.separator + "FortressOfTheMuslim_audio" + File.separator + "dua" +
+                mChaptersContentsModel.get(position).getIdPosition() + ".mp3").exists();
+
+        if (checkAudioFile) {
+            chaptersContentVH.tbPlayPauseItem.setVisibility(View.VISIBLE);
         } else {
-            chaptersContentVH.tbPlayItem.setVisibility(View.GONE);
-            chaptersContentVH.sbAudioProgress.setVisibility(View.GONE);
-            chaptersContentVH.tbRepeatItem.setVisibility(View.GONE);
-            chaptersContentVH.viewIfVisible.setVisibility(View.VISIBLE);
+            chaptersContentVH.tbPlayPauseItem.setVisibility(View.GONE);
+        }
+
+        if (currentIndex != position) {
+            chaptersContentVH.tbPlayPauseItem.setOnCheckedChangeListener(null);
+            chaptersContentVH.tbPlayPauseItem.setChecked(false);
         }
 
         chaptersContentVH.bindItemButtons(mSupplicationItemButtons, chaptersContentVH, mChaptersContentsModel, position);
@@ -107,5 +122,10 @@ public class ChaptersContentAdapter extends RecyclerView.Adapter<ChaptersContent
     @Override
     public int getItemCount() {
         return mChaptersContentsModel.size();
+    }
+
+    public void isItemSelected(int currentIndex) {
+        this.currentIndex = currentIndex;
+        notifyDataSetChanged();
     }
 }

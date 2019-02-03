@@ -24,6 +24,7 @@
 
     <string name="title_content_chapter">К списку глав</string>
     <string name="download_audio_chapter">Скачать главу</string>
+    <string name="download_audio_bookmarks">Скачать избранные</string>
     <string name="action_chapter_list">Список глав</string>
     <string name="action_bookmark_list">Избранные главы</string>
     <string name="action_dua_list">Список дуа</string>
@@ -33,4 +34,9 @@
     <string name="cancel">Отменить</string>
 
     <string name="download_all_instruction">Скачать все аудио файлы разом?</string>
+    <string name="invisible_source">Скрыть источник</string>
+    <string name="item_disable">Пункт отключён</string>
+    <string name="text_ru_item">Мир вам!</string>
+    <string name="text_tr_item">Ас-Саляму \'аляйкум</string>
+    <string name="text_ar_item">السلام عليكم</string>
 </resources>

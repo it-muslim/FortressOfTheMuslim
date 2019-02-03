@@ -87,26 +87,27 @@ public class SQLAudioLinksList extends SQLiteOpenHelper {
         return allLinks;
     }
 
-    List<LinkAudioModel> getOnlyLink() {
+    List<LinkAudioModel> getBookmarkList(int sampleBy) {
 
         SQLiteDatabase databaseFortress = this.getReadableDatabase();
 
         @SuppressLint("Recycle")
         Cursor cursor = databaseFortress.query(TableName,
                 mColumnsContent,
-                null, null, null,
+                "_id = ?",
+                new String[]{String.valueOf(sampleBy)}, null,
                 null, null, null);
 
-        List<LinkAudioModel> allLinks = new ArrayList<>();
+        List<LinkAudioModel> allBookmarks = new ArrayList<>();
 
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
-                allLinks.add(new LinkAudioModel(
+                allBookmarks.add(new LinkAudioModel(
                         cursor.getString(cursor.getColumnIndex(mPositionId)),
                         cursor.getString(cursor.getColumnIndex(mLinkAudio))));
                 cursor.moveToNext();
             }
         }
-        return allLinks;
+        return allBookmarks;
     }
 }

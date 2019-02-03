@@ -54,6 +54,7 @@
             tools:text="Content source" />
 
         <View
+            android:id="@+id/line_main"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginLeft="16dp"
@@ -61,11 +62,13 @@
             android:background="@color/main" />
 
         <View
+            android:id="@+id/line_accent"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="2dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:background="@color/main" />
+            android:background="@color/colorAccent"
+            android:visibility="gone" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -75,6 +78,18 @@
             android:paddingLeft="8dp"
             android:paddingTop="8dp"
             android:paddingBottom="8dp">
+
+            <ToggleButton
+                android:id="@+id/tb_play_pause_item"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:background="@drawable/state_play_checked"
+                android:text=""
+                android:textOff=""
+                android:textOn=""
+                android:visibility="gone" />
 
             <View
                 android:layout_width="0dp"

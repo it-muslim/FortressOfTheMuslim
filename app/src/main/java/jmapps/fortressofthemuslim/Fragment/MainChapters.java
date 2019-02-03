@@ -65,6 +65,7 @@ public class MainChapters extends Fragment implements Observer, MainChaptersAdap
 
         View rootMainChapters = inflater.inflate(R.layout.fragment_main_chapters, container, false);
         setHasOptionsMenu(true);
+        setRetainInstance(true);
 
         SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mEditor = mPreferences.edit();

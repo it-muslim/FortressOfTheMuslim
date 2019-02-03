@@ -91,7 +91,7 @@ public class DownloadsAudio {
             @Override
             protected void error(BaseDownloadTask task, Throwable e) {
                 progressDownload.dismiss();
-                Toast.makeText(mContext, "Ошибка скачивания", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Ошибка. Проверьте подключение к интернету", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -115,7 +115,7 @@ public class DownloadsAudio {
         progressDownload.setCancelable(false);
         progressDownload.show();
 
-        FileDownloadListener downloadListener = createListener(adapter);
+        FileDownloadListener downloadListener = selectivelyListener(adapter);
         FileDownloader.getImpl().bindService();
         FileDownloader.getImpl().clearAllTaskData();
 
@@ -136,7 +136,7 @@ public class DownloadsAudio {
         queueSet.start();
     }
 
-    private FileDownloadListener createListener(final RecyclerView.Adapter adapter) {
+    private FileDownloadListener selectivelyListener(final RecyclerView.Adapter adapter) {
         return new FileDownloadListener() {
             @Override
             protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
@@ -167,7 +167,83 @@ public class DownloadsAudio {
             @Override
             protected void error(BaseDownloadTask task, Throwable e) {
                 progressDownload.dismiss();
-                Toast.makeText(mContext, "Ошибка скачивания", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Ошибка. Проверьте подключение к интернету", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            protected void warn(BaseDownloadTask task) {
+
+            }
+        };
+    }
+
+    public void downloadSelectivelyBookmarks(RecyclerView.Adapter adapter) {
+
+        SQLAudioLinksList sqlAudioLinksList = new SQLAudioLinksList(mContext);
+        modelList = sqlAudioLinksList.getBookmarkList(0);
+
+        progressDownload = new ProgressDialog(mContext);
+        progressDownload.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDownload.setIcon(R.drawable.ic_download);
+        progressDownload.setTitle("Скачивание начинается...");
+        progressDownload.setMessage("Пожалуйста, дождитесь пока скачаются избранные аудио файлы...");
+        progressDownload.setMax(modelList.size());
+        progressDownload.setCancelable(false);
+        progressDownload.show();
+
+        FileDownloadListener downloadListener = bookmarksListener(adapter);
+        FileDownloader.getImpl().bindService();
+        FileDownloader.getImpl().clearAllTaskData();
+
+        File mediaFolderStorageDir = new File(Environment.getExternalStorageDirectory(),
+                "FortressOfTheMuslim_audio" + File.separator + "dua");
+
+        final FileDownloadQueueSet queueSet = new FileDownloadQueueSet(downloadListener);
+        final List<BaseDownloadTask> tasks = new ArrayList<>();
+
+        for (int i = 0; i < modelList.size(); i++) {
+            tasks.add(FileDownloader.getImpl().create(modelList.get(i).getLinkAudio())
+                    .setPath(mediaFolderStorageDir + modelList.get(i).getIdPosition() + ".mp3"));
+        }
+
+        queueSet.disableCallbackProgressTimes();
+        queueSet.setAutoRetryTimes(1);
+        queueSet.downloadTogether(tasks);
+        queueSet.start();
+    }
+
+    private FileDownloadListener bookmarksListener(final RecyclerView.Adapter adapter) {
+        return new FileDownloadListener() {
+            @Override
+            protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+            }
+
+            @Override
+            protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+            }
+
+            @Override
+            protected void completed(BaseDownloadTask task) {
+                progressDownload.setProgress(progressDownload.getProgress() + 1);
+                progressDownload.setTitle("Скачивание...");
+                if (progressDownload.getProgress() == modelList.size()) {
+                    adapter.notifyDataSetChanged();
+                    Toast.makeText(mContext, "Скачивание аудио файлов завершено", Toast.LENGTH_SHORT).show();
+                    progressDownload.dismiss();
+                }
+            }
+
+            @Override
+            protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+                Toast.makeText(mContext, "Скачивание приостановленно", Toast.LENGTH_SHORT).show();
+                progressDownload.dismiss();
+                FileDownloader.getImpl().pauseAll();
+            }
+
+            @Override
+            protected void error(BaseDownloadTask task, Throwable e) {
+                progressDownload.dismiss();
+                Toast.makeText(mContext, "Ошибка. Проверьте подключение к интернету", Toast.LENGTH_SHORT).show();
             }
 
             @Override

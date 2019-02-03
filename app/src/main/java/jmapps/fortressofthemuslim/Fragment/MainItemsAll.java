@@ -40,12 +40,12 @@ public class MainItemsAll extends Fragment implements Observer, MainItemsAdapter
 
     public static final String keyItemBookmark = "key_item_bookmark_";
 
-    private SharedPreferences mPreferences;
     private SharedPreferences.Editor mEditor;
 
     private MainItemsAdapter mainItemsAdapter;
 
     private UpdateBookmarkItems updateBookmarkItems;
+    private OnClickPlay onClickPlay;
 
     @Override
     public void onStart() {
@@ -62,7 +62,7 @@ public class MainItemsAll extends Fragment implements Observer, MainItemsAdapter
 
         View rootMainChapters = inflater.inflate(R.layout.fragment_main_items_all, container, false);
 
-        mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mEditor = mPreferences.edit();
 
         RecyclerView rvMainItemsList = rootMainChapters.findViewById(R.id.rv_main_items_list);
@@ -88,12 +88,25 @@ public class MainItemsAll extends Fragment implements Observer, MainItemsAdapter
     }
 
     @Override
-    public void eventButtons(MainItemsVH mainItemsVH, List<MainItemsModel> mainItemsModel, int position) {
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        onClickPlay = (OnClickPlay) context;
+    }
+
+    @Override
+    public void eventButtons(MainItemsVH mainItemsVH, final List<MainItemsModel> mainItemsModel, final int position) {
         final String strIdPosition = mainItemsModel.get(position).getIdPosition();
         final String strNumberOfSupplications = mainItemsModel.get(position).getIdPosition() + "/" + mainItemsModel.size();
         final String strContentArabic = mainItemsModel.get(position).getContentArabic();
         final String strContentTranscription = mainItemsModel.get(position).getContentTranscription();
         final String strContentRussian = mainItemsModel.get(position).getContentRussian();
+
+        mainItemsVH.tbPlayPauseItem.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                onClickPlay.play(position, mainItemsModel, mainItemsAdapter, isChecked);
+            }
+        });
 
         mainItemsVH.btnCopyItemContent.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -139,6 +152,10 @@ public class MainItemsAll extends Fragment implements Observer, MainItemsAdapter
                 }
             }
         });
+    }
+
+    public interface OnClickPlay {
+        void play(int position, List<MainItemsModel> model, MainItemsAdapter adapter, boolean isChecked);
     }
 
     @Override

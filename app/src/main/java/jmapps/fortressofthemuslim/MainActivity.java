@@ -5,15 +5,18 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -30,11 +33,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.File;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 import jmapps.fortressofthemuslim.Adapter.ListAppsAdapter;
+import jmapps.fortressofthemuslim.Adapter.MainItemsAdapter;
 import jmapps.fortressofthemuslim.Adapter.MainTabsPager;
 import jmapps.fortressofthemuslim.DBSetup.DBAssetHelper;
 import jmapps.fortressofthemuslim.Download.DownloadsAudio;
@@ -42,13 +49,16 @@ import jmapps.fortressofthemuslim.Fragment.BookmarkChapters;
 import jmapps.fortressofthemuslim.Fragment.MainChapters;
 import jmapps.fortressofthemuslim.Fragment.MainItemsAll;
 import jmapps.fortressofthemuslim.Fragment.MainItemsBookmark;
+import jmapps.fortressofthemuslim.Fragment.Settings;
+import jmapps.fortressofthemuslim.Model.MainItemsModel;
 import jmapps.fortressofthemuslim.Permission.GetPermission;
 
 import static jmapps.fortressofthemuslim.MainApplication.keyNightMode;
 import static jmapps.fortressofthemuslim.Model.ListAppM.listAppM;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener,
+        MainItemsAll.OnClickPlay {
 
     public static final int PERMISSION_REQUEST_CODE = 1;
 
@@ -56,6 +66,7 @@ public class MainActivity extends AppCompatActivity
 
     private SharedPreferences mPreferences;
     private SharedPreferences.Editor mEditor;
+    private MediaPlayer mediaPlayer;
 
     private DrawerLayout drawer;
     private MenuItem itemNightMode;
@@ -149,6 +160,9 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.nav_settings:
+                Settings settings = new Settings();
+                settings.setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialog);
+                settings.show(getSupportFragmentManager(), "settings");
                 break;
             case R.id.nav_list_apps:
                 listApps();
@@ -218,10 +232,65 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+
+    @Override
+    public void play(int position, List<MainItemsModel> model, MainItemsAdapter adapter, boolean isChecked) {
+        playOnly(position, model, adapter, isChecked);
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         dbAssetHelper.close();
+        clearMediaPlayer();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        clearMediaPlayer();
+    }
+
+    private void playOnly(int position, List<MainItemsModel> model, final MainItemsAdapter adapter, boolean isChecked) {
+
+        boolean checkAudioFile = new File(Environment.getExternalStorageDirectory() +
+                File.separator + "FortressOfTheMuslim_audio" + File.separator + "dua" +
+                model.get(position).getIdPosition() + ".mp3").exists();
+
+        if (checkAudioFile) {
+
+            clearMediaPlayer();
+
+            File audioFile = new File(Environment.getExternalStorageDirectory() +
+                    File.separator + "FortressOfTheMuslim_audio" + File.separator + "dua" +
+                    model.get(position).getIdPosition() + ".mp3");
+
+            mediaPlayer = MediaPlayer.create(this, Uri.fromFile(audioFile));
+            adapter.isItemSelected(position);
+            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    adapter.isItemSelected(-1);
+                }
+            });
+            if (isChecked) {
+                mediaPlayer.start();
+            } else {
+                mediaPlayer.pause();
+            }
+        } else {
+
+            Toast.makeText(this, "Файл не скачен или удалён", Toast.LENGTH_SHORT).show();
+
+        }
+    }
+
+    private void clearMediaPlayer() {
+        if (mediaPlayer != null) {
+            mediaPlayer.reset();
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
     }
 
     private void activateNightMode(boolean nightModeState) {

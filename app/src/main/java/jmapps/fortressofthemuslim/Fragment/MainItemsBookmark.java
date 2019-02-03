@@ -39,12 +39,15 @@ import jmapps.fortressofthemuslim.ViewHolder.MainItemsVH;
 
 import static jmapps.fortressofthemuslim.Fragment.MainItemsAll.keyItemBookmark;
 
-public class MainItemsBookmark extends Fragment implements Observer, MainItemsAdapter.SupplicationItemButtons {
+public class MainItemsBookmark extends Fragment implements Observer,
+        MainItemsAdapter.SupplicationItemButtons {
 
     private SharedPreferences mPreferences;
     private SharedPreferences.Editor mEditor;
 
     private RecyclerView rvMainBookmarksList;
+    private List<MainItemsModel> mainItemsModel;
+    private MainItemsAdapter mainItemsAdapter;
     private TextView tvIsBookmarkListEmpty;
 
     private UpdateBookmarkItems updateBookmarkItems;
@@ -63,6 +66,7 @@ public class MainItemsBookmark extends Fragment implements Observer, MainItemsAd
                              Bundle savedInstanceState) {
 
         View rootMainChapters = inflater.inflate(R.layout.fragment_main_items_bookmark, container, false);
+        setRetainInstance(true);
 
         mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mEditor = mPreferences.edit();
@@ -83,12 +87,19 @@ public class MainItemsBookmark extends Fragment implements Observer, MainItemsAd
     }
 
     @Override
-    public void eventButtons(MainItemsVH mainItemsVH, List<MainItemsModel> mainItemsModel, int position) {
+    public void eventButtons(MainItemsVH mainItemsVH, List<MainItemsModel> mainItemsModel, final int position) {
         final String strIdPosition = mainItemsModel.get(position).getIdPosition();
         final String strNumberOfSupplications = mainItemsModel.get(position).getIdPosition() + "/" + mainItemsModel.size();
         final String strContentArabic = mainItemsModel.get(position).getContentArabic();
         final String strContentTranscription = mainItemsModel.get(position).getContentTranscription();
         final String strContentRussian = mainItemsModel.get(position).getContentRussian();
+
+        mainItemsVH.tbPlayPauseItem.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mainItemsAdapter.isItemSelected(position);
+            }
+        });
 
         mainItemsVH.btnCopyItemContent.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -144,12 +155,12 @@ public class MainItemsBookmark extends Fragment implements Observer, MainItemsAd
 
     private void initList() {
         SQLItemList sqlItemList = new SQLItemList(getActivity());
-        List<MainItemsModel> mainItemsModel = sqlItemList.getBookmarkList();
+        mainItemsModel = sqlItemList.getBookmarkList();
 
         LinearLayoutManager verticalList = new LinearLayoutManager(getActivity());
         rvMainBookmarksList.setLayoutManager(verticalList);
 
-        MainItemsAdapter mainItemsAdapter = new MainItemsAdapter(mainItemsModel, getActivity(),
+        mainItemsAdapter = new MainItemsAdapter(mainItemsModel, getActivity(),
                 this, mPreferences);
 
         if (mainItemsAdapter.getItemCount() == 0) {

@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -44,7 +46,6 @@ import jmapps.fortressofthemuslim.Model.ChaptersContentModel;
 import jmapps.fortressofthemuslim.Observer.UpdateBookmarkChapters;
 import jmapps.fortressofthemuslim.Observer.UpdateBookmarkItems;
 import jmapps.fortressofthemuslim.Permission.GetPermission;
-import jmapps.fortressofthemuslim.Player.MPlayer;
 import jmapps.fortressofthemuslim.ViewHolder.ChaptersContentVH;
 
 import static jmapps.fortressofthemuslim.Fragment.MainChapters.keyChapterBookmark;
@@ -57,11 +58,10 @@ public class ChapterContentActivity extends AppCompatActivity implements Compoun
 
     private SharedPreferences mPreferences;
     private SharedPreferences.Editor mEditor;
+    private MediaPlayer mediaPlayer;
 
     private UpdateBookmarkChapters updateBookmarkChapters;
     private UpdateBookmarkItems updateBookmarkItems;
-
-    private MPlayer mPlayer;
 
     private Toolbar toolbar;
     private MenuItem itemDownloadChapter;
@@ -71,7 +71,6 @@ public class ChapterContentActivity extends AppCompatActivity implements Compoun
 
     private String chapterPosition;
     private int showTargetTap = 1;
-    private int firstIndex = -1;
 
     @Override
     protected void onStart() {
@@ -127,7 +126,6 @@ public class ChapterContentActivity extends AppCompatActivity implements Compoun
         rvChapterContent.setAdapter(chaptersContentAdapter);
 
         tbAddRemoverBookmarkChapter.setOnCheckedChangeListener(this);
-
         downloadsAudio = new DownloadsAudio(this);
         showTargetTap = mPreferences.getInt("key_target_tap", 0);
     }
@@ -204,6 +202,7 @@ public class ChapterContentActivity extends AppCompatActivity implements Compoun
         super.onDestroy();
         updateBookmarkChapters.deleteObserver(this);
         updateBookmarkItems.deleteObserver(this);
+        clearMediaPlayer();
     }
 
     @Override
@@ -214,9 +213,15 @@ public class ChapterContentActivity extends AppCompatActivity implements Compoun
         final String strContentTranscription = chaptersContentModel.get(position).getContentTranscription();
         final String strContentRussian = chaptersContentModel.get(position).getContentRussian();
 
-        chaptersContentVH.tbPlayItem.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        chaptersContentVH.tbPlayPauseItem.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    playOnly(position);
+                } else {
+                    mediaPlayer.pause();
+                }
+                chaptersContentAdapter.isItemSelected(position);
             }
         });
 
@@ -262,6 +267,48 @@ public class ChapterContentActivity extends AppCompatActivity implements Compoun
                 }
             }
         });
+    }
+
+    private void playOnly(int position) {
+
+        boolean checkAudioFile = new File(Environment.getExternalStorageDirectory() +
+                File.separator + "FortressOfTheMuslim_audio" + File.separator + "dua" +
+                chaptersContent.get(position).getIdPosition() + ".mp3").exists();
+
+        if (checkAudioFile) {
+
+            clearMediaPlayer();
+
+            File audioFile = new File(Environment.getExternalStorageDirectory() +
+                    File.separator + "FortressOfTheMuslim_audio" + File.separator + "dua" +
+                    chaptersContent.get(position).getIdPosition() + ".mp3");
+
+            mediaPlayer = MediaPlayer.create(ChapterContentActivity.this, Uri.fromFile(audioFile));
+            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    chaptersContentAdapter.isItemSelected(-1);
+                }
+            });
+            if (mediaPlayer != null) {
+                mediaPlayer.start();
+            } else {
+                Toast.makeText(this, "Предоставьте приложению доступ к хранилищу", Toast.LENGTH_SHORT).show();
+            }
+
+        } else {
+
+            Toast.makeText(this, "Файл не скачен или удалён", Toast.LENGTH_SHORT).show();
+
+        }
+    }
+
+    private void clearMediaPlayer() {
+        if (mediaPlayer != null) {
+            mediaPlayer.reset();
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -329,7 +376,9 @@ public class ChapterContentActivity extends AppCompatActivity implements Compoun
                     mEditor.putInt("key_target_tap", showTargetTap).apply();
                     TapTargetView.showFor(ChapterContentActivity.this,
                             TapTarget.forToolbarMenuItem(toolbar, R.id.action_download_audio_chapter,
-                                    "Скачать главу", "Нажмите на кнопку, чтобы скачать аудио файлы к главе")
+                                    "Скачать главу", "Нажмите на иконку, чтобы скачать аудио файлы к главе")
+                                    .textColor(R.color.main)
+                                    .outerCircleColor(R.color.colorAccent)
                                     .cancelable(true).tintTarget(true));
                 }
             }, 200);

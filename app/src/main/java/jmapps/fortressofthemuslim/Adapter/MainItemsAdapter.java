@@ -3,6 +3,7 @@ package jmapps.fortressofthemuslim.Adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
+import java.io.File;
 import java.util.List;
 
 import jmapps.fortressofthemuslim.Model.MainItemsModel;
@@ -19,6 +21,8 @@ import jmapps.fortressofthemuslim.R;
 import jmapps.fortressofthemuslim.ViewHolder.MainItemsVH;
 
 import static jmapps.fortressofthemuslim.Fragment.MainItemsAll.keyItemBookmark;
+import static jmapps.fortressofthemuslim.Fragment.Settings.keyRuVisibleState;
+import static jmapps.fortressofthemuslim.Fragment.Settings.keyTrVisibleState;
 
 public class MainItemsAdapter extends RecyclerView.Adapter<MainItemsVH> {
 
@@ -28,6 +32,7 @@ public class MainItemsAdapter extends RecyclerView.Adapter<MainItemsVH> {
     private final SupplicationItemButtons mSupplicationItemButtons;
     private final SharedPreferences mPreferences;
     private int lastPosition = -1;
+    private int currentIndex = -1;
 
     public interface SupplicationItemButtons {
         void eventButtons(MainItemsVH mainItemsVH, List<MainItemsModel> mainItemsModel, int position);
@@ -66,11 +71,25 @@ public class MainItemsAdapter extends RecyclerView.Adapter<MainItemsVH> {
             mainItemsVH.tvContentArabic.setVisibility(View.GONE);
         }
 
-        if (strContentTranscription != null) {
-            mainItemsVH.tvContentTranscription.setVisibility(View.VISIBLE);
-            mainItemsVH.tvContentTranscription.setText(Html.fromHtml(strContentTranscription));
+        boolean textTrState = mPreferences.getBoolean(keyTrVisibleState, false);
+        boolean textRuState = mPreferences.getBoolean(keyRuVisibleState, false);
+
+        if (!textTrState) {
+            if (strContentTranscription != null) {
+                mainItemsVH.tvContentTranscription.setVisibility(View.VISIBLE);
+                mainItemsVH.tvContentTranscription.setText(Html.fromHtml(strContentTranscription));
+            } else {
+                mainItemsVH.tvContentTranscription.setVisibility(View.GONE);
+            }
         } else {
             mainItemsVH.tvContentTranscription.setVisibility(View.GONE);
+        }
+
+        if (!textRuState) {
+            mainItemsVH.tvContentRussian.setVisibility(View.VISIBLE);
+            mainItemsVH.tvContentRussian.setText(Html.fromHtml(strContentRussian));
+        } else {
+            mainItemsVH.tvContentRussian.setVisibility(View.GONE);
         }
 
         mainItemsVH.tvContentRussian.setText(Html.fromHtml(strContentRussian));
@@ -80,6 +99,25 @@ public class MainItemsAdapter extends RecyclerView.Adapter<MainItemsVH> {
             mainItemsVH.tvContentSource.setText(strContentSource);
         } else {
             mainItemsVH.tvContentSource.setVisibility(View.GONE);
+        }
+
+        mainItemsVH.lineMain.setVisibility((currentIndex == position) ? View.INVISIBLE : View.VISIBLE);
+        mainItemsVH.lineAccent.setVisibility((currentIndex == position) ? View.VISIBLE : View.INVISIBLE);
+
+        boolean checkAudioFile = new File(Environment.getExternalStorageDirectory() +
+                File.separator + "FortressOfTheMuslim_audio" + File.separator + "dua" +
+                mMainItemsModel.get(position).getIdPosition() + ".mp3").exists();
+
+//        if (checkAudioFile) {
+//            mainItemsVH.tbPlayPauseItem.setVisibility(View.VISIBLE);
+//        } else {
+//            mainItemsVH.tbPlayPauseItem.setVisibility(View.GONE);
+//        }
+
+
+        if (currentIndex != position) {
+            mainItemsVH.tbPlayPauseItem.setOnCheckedChangeListener(null);
+            mainItemsVH.tbPlayPauseItem.setChecked(false);
         }
 
         String strNumberOfSupplications = position + 1 + "/" + mMainItemsModel.size();
@@ -102,5 +140,10 @@ public class MainItemsAdapter extends RecyclerView.Adapter<MainItemsVH> {
     @Override
     public int getItemCount() {
         return mMainItemsModel.size();
+    }
+
+    public void isItemSelected(int currentIndex) {
+        this.currentIndex = currentIndex;
+        notifyDataSetChanged();
     }
 }

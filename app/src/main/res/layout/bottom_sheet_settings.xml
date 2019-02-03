@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/tv_settings_head"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:drawableStart="@drawable/ic_settings_white"
+            android:drawableLeft="@drawable/ic_settings_white"
+            android:drawablePadding="16dp"
+            android:padding="16dp"
+            android:text="@string/nav_settings"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ToggleButton
+            android:id="@+id/tb_ar_settings"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@android:color/transparent"
+            android:clickable="false"
+            android:gravity="center"
+            android:textOff="@string/text_ar_item"
+            app:layout_constraintEnd_toStartOf="@+id/btn_text_ar_size_pp"
+            app:layout_constraintStart_toEndOf="@+id/btn_text_ar_size_mm"
+            app:layout_constraintTop_toBottomOf="@+id/tv_settings_head" />
+
+        <Button
+            android:id="@+id/btn_text_ar_size_mm"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:background="@drawable/state_minus_pressed"
+            app:layout_constraintBottom_toBottomOf="@+id/tb_ar_settings"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tb_ar_settings" />
+
+        <Button
+            android:id="@+id/btn_text_ar_size_pp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/state_plus_pressed"
+            app:layout_constraintBottom_toBottomOf="@+id/tb_ar_settings"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tb_ar_settings" />
+
+        <SeekBar
+            android:id="@+id/sb_text_color_ar"
+            android:layout_width="379dp"
+            android:layout_height="22dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:max="1791"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tb_ar_settings" />
+
+        <View
+            android:id="@+id/view_one"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginRight="24dp"
+            android:background="@color/main"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sb_text_color_ar" />
+
+        <Button
+            android:id="@+id/btn_text_tr_size_mm"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:background="@drawable/state_minus_pressed"
+            app:layout_constraintBottom_toBottomOf="@+id/tb_tr_setting"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tb_tr_setting" />
+
+        <ToggleButton
+            android:id="@+id/tb_tr_setting"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@android:color/transparent"
+            android:clickable="false"
+            android:textOff="@string/text_tr_item"
+            android:textOn="@string/item_disable"
+            app:layout_constraintEnd_toStartOf="@+id/btn_text_tr_size_pp"
+            app:layout_constraintStart_toEndOf="@+id/btn_text_tr_size_mm"
+            app:layout_constraintTop_toBottomOf="@+id/view_one" />
+
+        <Button
+            android:id="@+id/btn_text_tr_size_pp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/state_plus_pressed"
+            app:layout_constraintBottom_toBottomOf="@+id/tb_tr_setting"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tb_tr_setting" />
+
+        <SeekBar
+            android:id="@+id/sb_text_color_tr"
+            android:layout_width="327dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:max="1791"
+            app:layout_constraintEnd_toStartOf="@+id/cb_text_tr"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tb_tr_setting" />
+
+        <CheckBox
+            android:id="@+id/cb_text_tr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:button="@drawable/state_eye_checked"
+            app:layout_constraintBottom_toBottomOf="@+id/sb_text_color_tr"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/sb_text_color_tr" />
+
+        <View
+            android:id="@+id/view_two"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginRight="24dp"
+            android:background="@color/main"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sb_text_color_tr" />
+
+        <Button
+            android:id="@+id/btn_text_ru_size_mm"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:background="@drawable/state_minus_pressed"
+            app:layout_constraintBottom_toBottomOf="@+id/tb_ru_setting"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tb_ru_setting" />
+
+        <ToggleButton
+            android:id="@+id/tb_ru_setting"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@android:color/transparent"
+            android:clickable="false"
+            android:textOff="@string/text_ru_item"
+            android:textOn="@string/item_disable"
+            app:layout_constraintEnd_toStartOf="@+id/btn_text_ru_size_pp"
+            app:layout_constraintStart_toEndOf="@+id/btn_text_ru_size_mm"
+            app:layout_constraintTop_toBottomOf="@+id/view_two" />
+
+        <Button
+            android:id="@+id/btn_text_ru_size_pp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/state_plus_pressed"
+            app:layout_constraintBottom_toBottomOf="@+id/tb_ru_setting"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tb_ru_setting" />
+
+        <SeekBar
+            android:id="@+id/sb_text_color_ru"
+            android:layout_width="327dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:max="1791"
+            app:layout_constraintEnd_toStartOf="@+id/cb_text_ru"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tb_ru_setting" />
+
+        <CheckBox
+            android:id="@+id/cb_text_ru"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:button="@drawable/state_eye_checked"
+            app:layout_constraintBottom_toBottomOf="@+id/sb_text_color_ru"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/sb_text_color_ru" />
+
+        <View
+            android:id="@+id/view_three"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginRight="24dp"
+            android:layout_marginBottom="24dp"
+            android:background="@color/main"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sb_text_color_ru" />
+
+    </android.support.constraint.ConstraintLayout>
+</android.support.v4.widget.NestedScrollView>
